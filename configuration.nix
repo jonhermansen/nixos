@@ -18,7 +18,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # networking.hostName = "nixos"; # Define your hostname.
+  # networking.hostName = "desktop"; # Define your hostname.
 
   # Configure network connections interactively with nmcli or nmtui.
   networking.networkmanager.enable = true;
@@ -76,6 +76,9 @@
     colmena
     emacs
     git
+    i3
+    sway
+    xorg.xinit
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

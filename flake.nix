@@ -13,7 +13,7 @@
         };
       };
 
-      nixos = {
+      desktop = {
         imports = [
           ./configuration.nix
           xlibre.nixosModules.overlay-xlibre-xserver
