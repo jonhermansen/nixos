@@ -1,15 +1,14 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     colmena.url = "github:zhaofengli/colmena";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     xlibre.url = "git+https://codeberg.org/takagemacoed/xlibre-overlay";
   };
-  outputs = { nixpkgs, colmena, xlibre, ... }: {
+  outputs = { colmena, nixpkgs, xlibre, ... }: {
     colmenaHive = colmena.lib.makeHive {
       meta = {
         nixpkgs = import nixpkgs {
           system = "x86_64-linux";
-          #overlays = [xlibre];
         };
       };
 
@@ -17,9 +16,9 @@
         imports = [
           ./configuration.nix
           xlibre.nixosModules.overlay-xlibre-xserver
-	  xlibre.nixosModules.overlay-all-xlibre-drivers
-	  xlibre.nixosModules.nvidia-ignore-ABI
-	];
+          xlibre.nixosModules.overlay-all-xlibre-drivers
+          xlibre.nixosModules.nvidia-ignore-ABI
+        ];
 
         deployment.allowLocalDeployment = true;
       };
