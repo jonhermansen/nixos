@@ -40,9 +40,13 @@
     i3status
     i3-volume
     librewolf
+    llama-cpp
     mangohud
     nixfmt
+    ollama
+    open-webui
     rustc
+    sbctl
     scrot
     sway
     xorg.xdpyinfo
@@ -87,16 +91,16 @@
   nixpkgs.overlays = [
     (self: super: {
       colmena = super.colmena.overrideAttrs (old: rec {
+        cargoDeps = self.rustPlatform.fetchCargoVendor {
+          inherit src;
+          hash = "sha256-v5vv66x+QiDhSa3iJ3Kf7PC8ZmK1GG8QdVD2a1L0r6M=";
+        };
         patches = [ ];
         src = super.fetchFromGitHub {
           owner = "zhaofengli";
           repo = "colmena";
           rev = "5e0fbc4dbc50b3a38ecdbcb8d0a5bbe12e3f9a72";
           hash = "sha256-vwu354kJ2fjK1StYmsi/M2vGQ2s72m+t9pIPHImt1Xw=";
-        };
-        cargoDeps = self.rustPlatform.fetchCargoVendor {
-          inherit src;
-          hash = "sha256-v5vv66x+QiDhSa3iJ3Kf7PC8ZmK1GG8QdVD2a1L0r6M=";
         };
       });
     })

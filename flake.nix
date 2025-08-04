@@ -1,8 +1,18 @@
 {
   inputs = {
-    colmena.url = "github:zhaofengli/colmena";
+    colmena = {
+      url = "github:zhaofengli/colmena";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.4.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    xlibre.url = "git+https://codeberg.org/takagemacoed/xlibre-overlay";
+    xlibre = {
+      url = "git+https://codeberg.org/takagemacoed/xlibre-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs = { colmena, nixpkgs, xlibre, ... }: {
     colmenaHive = colmena.lib.makeHive {
