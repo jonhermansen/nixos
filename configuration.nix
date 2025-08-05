@@ -55,6 +55,7 @@
     protonvpn-gui
     python3
     open-webui
+    openvpn
     rustc
     sbctl
     scrot
@@ -67,6 +68,15 @@
     xorg.xdpyinfo
     zig
     zlib
+    # Fixing VPN?
+    networkmanager
+    networkmanager-openvpn
+    #proton-core
+    #proton-vpn-api-core
+    proton-vpn-local-agent
+    #pycairo
+    #pygobject3
+    #pyxdg
   ];
   fonts.fontconfig = {
     defaultFonts = {
@@ -90,15 +100,17 @@
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
-  networking.firewall.allowedTCPPorts = [ 22 ];
-  networking.firewall.enable = true;
+  #networking.firewall.checkReversePath = false; # for protonvpn
+  #networking.firewall.allowedTCPPorts = [ 22 ];
+  #networking.firewall.enable = false;
   networking.hostId = "00000000";
   networking.hostName = "desktop";
-  networking.nameservers = [
-    "1.1.1.1#one.one.one.one"
-    "1.0.0.1#one.one.one.one"
-  ];
+#  networking.nameservers = [
+#    "1.1.1.1#one.one.one.one"
+#    "1.0.0.1#one.one.one.one"
+#  ];
   networking.networkmanager.enable = true;
+  networking.networkmanager.plugins = with pkgs; [ networkmanager-openvpn ];
   nix.settings.experimental-features = [
     "flakes"
     "nix-command"
@@ -157,17 +169,17 @@
   ];
   programs.zsh.enable = true;
   services.gnome.gnome-keyring.enable = true;
-  services.openssh.enable = true;
-  services.resolved = {
-    enable = true;
-    dnssec = "true";
-    domains = [ "~." ];
-    fallbackDns = [
-      "1.1.1.1#one.one.one.one"
-      "1.0.0.1#one.one.one.one"
-    ];
-    dnsovertls = "true";
-  };
+  #services.openssh.enable = true;
+  # services.resolved = {
+  #   enable = true;
+  #   dnssec = "true";
+  #   domains = [ "~." ];
+  #   fallbackDns = [
+  #     "1.1.1.1#one.one.one.one"
+  #     "1.0.0.1#one.one.one.one"
+  #   ];
+  #   dnsovertls = "true";
+  # };
   services.xserver = {
     displayManager.startx.enable = true;
     enable = true;
@@ -187,29 +199,61 @@
   users.users.user = {
     isNormalUser = true;
     extraGroups = [
+      "audio"
+      "disk"
       "input"
       "libvirtd"
+      "networkmanager"
+      "qemu-libvirtd"
       "video"
       "wheel"
     ];
     shell = pkgs.zsh;
   };
+  # virtualisation.libvirtd = {
+  #   enable = true;
+  #   qemu = {
+  #     package = pkgs.qemu_kvm;
+  #     runAsRoot = true;
+  #     swtpm.enable = true;
+  #     ovmf = {
+  #       enable = true;
+  #       packages = [
+  #         (pkgs.OVMF.override {
+  #           secureBoot = true;
+  #           tpmSupport = true;
+  #         }).fd
+  #       ];
+  #     };
+  #   };
+  # };
+  virtualisation.xen.enable = false;
   virtualisation.libvirtd = {
     enable = true;
     qemu = {
+#      verbatimConfig = ''
+#    cgroup_device_acl = [
+#        "/dev/null", "/dev/full", "/dev/zero",
+#        "/dev/random", "/dev/urandom",
+#        "/dev/ptmx", "/dev/kvm",
+#        "/dev/kvmfr0"
+#    ]
+#'';
+      vhostUserPackages = with pkgs; [ virtiofsd ];
       package = pkgs.qemu_kvm;
       runAsRoot = true;
       swtpm.enable = true;
       ovmf = {
         enable = true;
         packages = [
-          (pkgs.OVMF.override {
+          pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd # AAVMF
+          (pkgs.OVMFFull.override {
             secureBoot = true;
             tpmSupport = true;
           }).fd
+          #pkgsAarch64.OVMFFull.fd
         ];
       };
     };
-  };
-  virtualisation.xen.enable = false;
+  };  
 }
