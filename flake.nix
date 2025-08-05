@@ -10,7 +10,7 @@
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     xlibre = {
-      url = "git+https://codeberg.org/takagemacoed/xlibre-overlay";
+      url = "git+https://codeberg.org/jonhermansen/xlibre-overlay?ref=nvidia-470-testing";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
