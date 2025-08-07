@@ -140,9 +140,10 @@
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
-  #networking.firewall.checkReversePath = false; # for protonvpn
-  #networking.firewall.allowedTCPPorts = [ 22 ];
-  #networking.firewall.enable = false;
+  networking.firewall.checkReversePath = false; # for protonvpn
+  networking.firewall.trustedInterfaces = [ "enp6s0" "virbr0" ];
+  networking.firewall.allowedTCPPorts = [ 22 ];
+  networking.firewall.enable = false;
   networking.hostId = "00000000";
   networking.hostName = "desktop";
 #  networking.nameservers = [
@@ -210,6 +211,7 @@
     })
   ];
   programs.dconf.enable = true;
+  programs.nix-ld.enable = true;
   programs.obs-studio.package = (pkgs.obs-studio.override {
     cudaSupport = true;
   });

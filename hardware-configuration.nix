@@ -16,6 +16,7 @@
   boot.extraModprobeConfig = ''
     options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
   '';
+  boot.zfs.extraPools = [ "zpool" ]; # very important that pool has no mountpoints set
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/fe6e63b5-1c30-462b-ac20-46f309234236";
