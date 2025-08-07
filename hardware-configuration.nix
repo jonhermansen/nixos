@@ -8,10 +8,14 @@
     [ (modulesPath + "/profiles/qemu-guest.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
+  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" "nvidia_drm" "nvidia_modeset" "nvidia" "nvidia_uvm" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" "wireguard" ];
-  boot.extraModulePackages = [ ];
+  boot.kernelParams = [ "i915.force_probe=8086:4680" ];
+  boot.extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+  boot.extraModprobeConfig = ''
+    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
+  '';
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/fe6e63b5-1c30-462b-ac20-46f309234236";

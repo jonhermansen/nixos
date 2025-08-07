@@ -14,6 +14,23 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.enable = true;
   boot.supportedFilesystems = [ "zfs" ];
+  # environment.gnome.excludePackages = (with pkgs; [
+  #   atomix # puzzle game
+  #   cheese # webcam tool
+  #   epiphany # web browser
+  #   evince # document viewer
+  #   geary # email reader
+  #   gedit # text editor
+  #   gnome-characters
+  #   gnome-music
+  #   gnome-photos
+  #   gnome-terminal
+  #   gnome-tour
+  #   hitori # sudoku game
+  #   iagno # go game
+  #   tali # poker game
+  #   totem # video player
+  # ]);
   environment.sessionVariables.GTK_THEME = "Dracula";
   environment.systemPackages = with pkgs; [
     (wrapOBS {
@@ -23,9 +40,11 @@
         obs-pipewire-audio-capture
       ];
     })
+    (sudo.override { withInsults = true; })
     balatro
     brave
     cargo
+    chatterino2
     cmake
     #code-cursor
     colmena
@@ -41,6 +60,9 @@
     gh
     ghostty
     git
+    #gnome.adwaita-icon-theme
+    #gnome.gnome-settings-daemon
+    #gnomeExtensions.appindicator
     gnumake
     i3
     i3blocks
@@ -50,33 +72,36 @@
     librewolf
     llama-cpp
     mangohud
+    mpv
+    nix-update
     nixfmt
+    nixpkgs-review
     ollama
+    pavucontrol
+    pipewire
     protonvpn-gui
+    pulseaudio
     python3
     open-webui
     openvpn
+    qpwgraph
     rustc
     sbctl
     scrot
+    signal-desktop
     spirv-tools
     steam
     sway
     virt-manager
+    virtualenv
+    vscode
+    waydroid
     windsurf
     wireguard-tools
     xorg.xdpyinfo
     zig
     zlib
-    # Fixing VPN?
-    networkmanager
-    networkmanager-openvpn
-    #proton-core
-    #proton-vpn-api-core
-    proton-vpn-local-agent
-    #pycairo
-    #pygobject3
-    #pyxdg
+    zls
   ];
   fonts.fontconfig = {
     defaultFonts = {
@@ -92,13 +117,28 @@
     source-code-pro
   ];
   hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
+  hardware.graphics.extraPackages = with pkgs; [
+    intel-compute-runtime
+    # intel-media-sdk # DO NOT ENABLE, vulnerable!
+    intel-vaapi-driver
+    mesa
+    nvidia-vaapi-driver
+    vaapiIntel
+    vaapiVdpau
+    vpl-gpu-rt
+    #vulkan-tools
+    vulkan-loader
+    vulkan-validation-layers
+    vulkan-extension-layer
+  ];  
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = false;
     powerManagement.finegrained = false;
     open = false;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
   #networking.firewall.checkReversePath = false; # for protonvpn
   #networking.firewall.allowedTCPPorts = [ 22 ];
@@ -116,6 +156,8 @@
     "nix-command"
   ];
   nixpkgs.config.allowUnfree = true;
+  #nixpkgs.config.cudaSupport = true;
+  nixpkgs.config.nvidia.acceptLicense = true;
   nixpkgs.overlays = [
     (self: super: {
       # bork = super.stdenv.mkDerivation rec {
@@ -167,7 +209,14 @@
       # });
     })
   ];
+  programs.dconf.enable = true;
+  programs.obs-studio.package = (pkgs.obs-studio.override {
+    cudaSupport = true;
+  });
+  programs.steam.enable = true;
   programs.zsh.enable = true;
+  security.polkit.enable = true;
+  #services.desktopManager.gnome.enable = true;
   services.gnome.gnome-keyring.enable = true;
   #services.openssh.enable = true;
   # services.resolved = {
@@ -227,7 +276,6 @@
   #     };
   #   };
   # };
-  virtualisation.xen.enable = false;
   virtualisation.libvirtd = {
     enable = true;
     qemu = {
@@ -255,5 +303,7 @@
         ];
       };
     };
-  };  
+  };
+  virtualisation.waydroid.enable = true;
+  virtualisation.xen.enable = false;
 }
